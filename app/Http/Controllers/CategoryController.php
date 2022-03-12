@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Category;
 class CategoryController extends Controller
 {
     /**
@@ -13,7 +13,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+         // get all the sharks
+        $category = Category::all();
+
+        // return view('category.index', ['category'=>$category]);
+        // load the view and pass the sharks
+        return view('category.index',compact('category'));
+  
     }
 
     /**
@@ -23,7 +29,11 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        // load the create form (app/views/category/create.blade.php)
+       
+        return view('category.create');
+      
+       
     }
 
     /**
@@ -34,7 +44,25 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'meta_title' => 'required',
+            'meta_description' => 'required',
+            'meta_image' => 'required',
+            
+        ]);
+        $category = new Category;
+        $category->meta_title = $request->meta_title;
+        $category->meta_description = $request->meta_description;
+        if ($image = $request->file('meta_image')) {
+            $destinationPath = 'image/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $category->meta_image = $profileImage;
+       }
+        // $category->meta_image = $request->meta_image;
+       $category->save();  
+       return redirect('category')->with('status', 'Category Added !!');
+    
     }
 
     /**
@@ -45,7 +73,12 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        // get the category
+        $category = Category::find($id);
+
+        // show the view and pass the category to it
+        return view('category.index',compact('category'));
+            
     }
 
     /**
@@ -56,7 +89,11 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+          // get the category
+          $category = Category::find($id);
+
+          // show the edit form and pass the category
+          return view('category.edit',compact('category'));
     }
 
     /**
@@ -68,7 +105,29 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'meta_title' => 'required',
+            'meta_description' => 'required',
+            'meta_image' => 'required',
+            
+        ]);
+        $category = Category::find($id);
+        $category->meta_title = $request->meta_title;
+        $category->meta_description = $request->meta_description;
+        if ($image = $request->file('meta_image')) {
+            $destinationPath = 'image/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $category->image = $profileImage;
+       
+        }
+        else{
+                 unset($category->image);
+             }
+       $category->save();  
+    
+    return redirect('/category')->with('status', 'Category Updated !!');
+
     }
 
     /**
@@ -79,6 +138,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Category::destroy($id);
+    return redirect('/category')->with('status', 'Category Deleted !!');
     }
+    
 }

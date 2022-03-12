@@ -1,8 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\AdminLoginController;
+// use App\Http\Controllers\Admin\AdminFrontendController;
+// use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\FrontendController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,18 +27,34 @@ Route::get('/', function () {
 
 Auth::routes();
 
-// Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/home', [HomeController::class,'index']);
-Route::get('/admin', [AdminController::class,'index']);
 
-// Route::prefix('admin')->group(function(){
-//     Route::get('/login', [AdminLoginController::class,'showLoginForm'])->name('admin.login');
-//     Route::post('/login', [AdminLoginController::class,'login'])->name('admin.login.submit');
-//     Route::get('/', [AdminController::class,'index'])->name('admin.dashboard');
-//     Route::get('/category', [FrontendController::class,'index']);
-//   });
- Route::resource('/category','CategoryController');
- Route::resource('/product','ProductController');
+Route::prefix('admin')->group(function(){
+    Route::get('/login', [AdminLoginController::class,'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminLoginController::class,'login'])->name('admin.login.submit');
+    Route::get('/', [AdminController::class,'index'])->name('admin.dashboard');
+    Route::get('/category', [FrontendController::class,'index']);
+  });
+//   Route::get('/category',[CategoryController::class,'index'])->name('category.index');
 
-// Route::get('/frontend', [FrontendController::class, 'index']);
+// Route::post('/category',[CategoryController::class,'insert']);
+// Route::get('/category/edit/{id}',[CategoryController::class,'edit'])->name('edit');
+// Route::put('/category/edit/{id}',[CategoryController::class,'update'])->name('update');
+// Route::get('/category/delete/{id}',[CategoryController::class,'delete'])->name('delete');
+// Route::get('/category',[CategoryController::class,'index'])->name('category.index');
+
+// Route::post('/add/category',[CategoryController::class,'insert']);
+// Route::get('/category/edit/{id}',[CategoryController::class,'edit'])->name('edit');
+// Route::put('/category/edit/{id}',[CategoryController::class,'update'])->name('update');
+// Route::get('/category/delete/{id}',[CategoryController::class,'delete'])->name('delete');
+Route::resource('category', 'CategoryController');
+Route::resource('product', 'ProductController');
+
+// Route::get('/product',[ProductController::class, 'index'])->name('product.index');
+// Route::post('/product',[ProductController::class, 'insert']);
+// Route::get('/product/edit/{id}',[ProductController::class, 'edit'])->name('pro.edit');
+// Route::put('/product/edit/{id}',[ProductController::class, 'update']);
+// Route::get('/product/delete/{id}',[ProductController::class, 'delete']);
+
+Route::get('/frontend', [FrontendController::class, 'index']);
